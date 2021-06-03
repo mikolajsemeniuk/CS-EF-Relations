@@ -64,6 +64,26 @@ namespace app.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Footers",
+                columns: table => new
+                {
+                    FooterId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Reference = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PostId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Footers", x => x.FooterId);
+                    table.ForeignKey(
+                        name: "FK_Footers_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Likes",
                 columns: table => new
                 {
@@ -91,6 +111,12 @@ namespace app.Migrations
                 column: "FollowedId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Footers_PostId",
+                table: "Footers",
+                column: "PostId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Likes_PostId",
                 table: "Likes",
                 column: "PostId");
@@ -105,6 +131,9 @@ namespace app.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Followers");
+
+            migrationBuilder.DropTable(
+                name: "Footers");
 
             migrationBuilder.DropTable(
                 name: "Likes");

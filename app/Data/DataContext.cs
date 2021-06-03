@@ -13,6 +13,7 @@ namespace app.Data
 		public DbSet<Post> Posts { get; set; }
         public DbSet<Follower> Followers { get; set; }
         public DbSet<Like> Likes { get; set; }
+		public DbSet<Footer> Footers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
 		{

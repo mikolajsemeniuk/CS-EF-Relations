@@ -10,7 +10,7 @@ using app.Data;
 namespace app.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210603121737_initial")]
+    [Migration("20210603125426_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,6 +34,27 @@ namespace app.Migrations
                     b.HasIndex("FollowedId");
 
                     b.ToTable("Followers");
+                });
+
+            modelBuilder.Entity("app.Models.Footer", b =>
+                {
+                    b.Property<int>("FooterId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FooterId");
+
+                    b.HasIndex("PostId")
+                        .IsUnique();
+
+                    b.ToTable("Footers");
                 });
 
             modelBuilder.Entity("app.Models.Like", b =>
@@ -108,6 +129,17 @@ namespace app.Migrations
                     b.Navigation("FollowerUser");
                 });
 
+            modelBuilder.Entity("app.Models.Footer", b =>
+                {
+                    b.HasOne("app.Models.Post", "Post")
+                        .WithOne("Footer")
+                        .HasForeignKey("app.Models.Footer", "PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("app.Models.Like", b =>
                 {
                     b.HasOne("app.Models.Post", "Post")
@@ -140,6 +172,8 @@ namespace app.Migrations
 
             modelBuilder.Entity("app.Models.Post", b =>
                 {
+                    b.Navigation("Footer");
+
                     b.Navigation("Likes");
                 });
 

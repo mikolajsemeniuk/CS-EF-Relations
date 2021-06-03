@@ -57,7 +57,11 @@ namespace app.Services
                         Likes = post.Likes.Select(like => new LikePayload
                         {
                             LikerId = like.UserId,
-                        }).ToList()
+                        }).ToList(),
+                        Footer = new FooterPayload
+                        {
+                            Reference = post.Footer.Reference
+                        },
                     }).ToList(),
                     Followers = user.Followers.Select(follower => new FollowerPayload
                     {
@@ -67,7 +71,9 @@ namespace app.Services
                     {
                         FollowerId = follower.FollowerId
                     }).ToList()
-                }).SingleAsync();
+                })
+                .AsNoTracking()
+                .SingleAsync();
         }
 
         public async Task<IEnumerable<UserPayload>> GetUsersAsync()
@@ -91,7 +97,11 @@ namespace app.Services
                         Likes = post.Likes.Select(like => new LikePayload
                         {
                             LikerId = like.UserId,
-                        }).ToList()
+                        }).ToList(),
+                        Footer = new FooterPayload
+                        {
+                            Reference = post.Footer.Reference
+                        },
                     }).ToList(),
                     Followers = user.Followers.Select(follower => new FollowerPayload
                     {

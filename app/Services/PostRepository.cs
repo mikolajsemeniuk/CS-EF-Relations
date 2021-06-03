@@ -27,7 +27,11 @@ namespace app.Services
             var post = new Post
             {
                 Title = title,
-                UserId = userId
+                UserId = userId,
+                Footer = new Footer
+                {
+                    Reference = "my footer"
+                }
             };
             _context.Posts.Add(post);
             if (await _context.SaveChangesAsync() < 1)
@@ -47,6 +51,7 @@ namespace app.Services
             return await _context.Posts
                 .Where(post => post.UserId == userId && post.PostId == postId)
                 .Include(post => post.Likes)
+                .Include(post => post.Footer)
                 .Select(post => new PostPayload
                 {
                     PostId = post.PostId,
@@ -56,7 +61,11 @@ namespace app.Services
                     Likes = post.Likes.Select(like => new LikePayload
                     {
                         LikerId = like.UserId,
-                    }).ToList()
+                    }).ToList(),
+                    Footer = new FooterPayload
+                    {
+                        Reference = post.Footer.Reference
+                    }
                 }).SingleAsync();
         }
 
@@ -65,6 +74,7 @@ namespace app.Services
             return await _context.Posts
                 .Where(post => post.UserId == userId)
                 .Include(post => post.Likes)
+                .Include(post => post.Footer)
                 .Select(post => new PostPayload
                 {
                     PostId = post.PostId,
@@ -74,7 +84,11 @@ namespace app.Services
                     Likes = post.Likes.Select(like => new LikePayload
                     {
                         LikerId = like.UserId,
-                    }).ToList()
+                    }).ToList(),
+                    Footer = new FooterPayload
+                    {
+                        Reference = post.Footer.Reference
+                    }
                 }).ToListAsync();
         }
 
@@ -95,8 +109,11 @@ namespace app.Services
             if (await _context.Users.FindAsync(userId) == null)
                 throw new Exception("there is no user with this id");
 
-            var post = await _context.Posts.FindAsync(postId);
+            var post = await _context.Posts
+                .Include(post => post.Footer)
+                .FirstAsync(post => post.PostId == postId);
             post.Title = title;
+            post.Footer.Reference = "edited";
             
             if (await _context.SaveChangesAsync() < 1)
                 throw new Exception("something went wrong");
