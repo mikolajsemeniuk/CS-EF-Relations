@@ -40,9 +40,10 @@ namespace app.Services
             return await _context
                 .Users
                 .Where(user => user.UserId == id)
-                .Include(user => user.Posts)
                 .Include(user => user.Followers)
                 .Include(user => user.Followed)
+                .Include(user => user.Posts)
+                .ThenInclude(post => post.Likes)
                 .Select(user => new UserPayload
                 {
                     UserId = user.UserId,
@@ -52,7 +53,11 @@ namespace app.Services
                         PostId = post.PostId,
                         Title = post.Title,
                         CreatedAt = post.CreatedAt,
-                        UserId = post.UserId
+                        UserId = post.UserId,
+                        Likes = post.Likes.Select(like => new LikePayload
+                        {
+                            LikerId = like.UserId,
+                        }).ToList()
                     }).ToList(),
                     Followers = user.Followers.Select(follower => new FollowerPayload
                     {
@@ -69,9 +74,10 @@ namespace app.Services
         {
             return await _context
                 .Users
-                .Include(user => user.Posts)
                 .Include(user => user.Followers)
                 .Include(user => user.Followed)
+                .Include(user => user.Posts)
+                .ThenInclude(post => post.Likes)
                 .Select(user => new UserPayload
                 {
                     UserId = user.UserId,
@@ -81,7 +87,11 @@ namespace app.Services
                         PostId = post.PostId,
                         Title = post.Title,
                         CreatedAt = post.CreatedAt,
-                        UserId = post.UserId
+                        UserId = post.UserId,
+                        Likes = post.Likes.Select(like => new LikePayload
+                        {
+                            LikerId = like.UserId,
+                        }).ToList()
                     }).ToList(),
                     Followers = user.Followers.Select(follower => new FollowerPayload
                     {
@@ -96,8 +106,11 @@ namespace app.Services
 
         public async Task RemoveUserAsync(int id)
         {
+            var likes = await _context.Likes.FindAsync(id);
+
             var user = await _context.Users.FindAsync(id);
             _context.Users.Remove(user);
+
             if (await _context.SaveChangesAsync() < 1)
                 throw new Exception("error while saving");
         }

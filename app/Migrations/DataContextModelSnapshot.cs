@@ -34,6 +34,21 @@ namespace app.Migrations
                     b.ToTable("Followers");
                 });
 
+            modelBuilder.Entity("app.Models.Like", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "PostId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Likes");
+                });
+
             modelBuilder.Entity("app.Models.Post", b =>
                 {
                     b.Property<int>("PostId")
@@ -91,6 +106,25 @@ namespace app.Migrations
                     b.Navigation("FollowerUser");
                 });
 
+            modelBuilder.Entity("app.Models.Like", b =>
+                {
+                    b.HasOne("app.Models.Post", "Post")
+                        .WithMany("Likes")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("app.Models.User", "User")
+                        .WithMany("Likes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("app.Models.Post", b =>
                 {
                     b.HasOne("app.Models.User", "User")
@@ -102,11 +136,18 @@ namespace app.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("app.Models.Post", b =>
+                {
+                    b.Navigation("Likes");
+                });
+
             modelBuilder.Entity("app.Models.User", b =>
                 {
                     b.Navigation("Followed");
 
                     b.Navigation("Followers");
+
+                    b.Navigation("Likes");
 
                     b.Navigation("Posts");
                 });

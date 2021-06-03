@@ -12,6 +12,7 @@ namespace app.Data
         public DbSet<User> Users { get; set; }
 		public DbSet<Post> Posts { get; set; }
         public DbSet<Follower> Followers { get; set; }
+        public DbSet<Like> Likes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
 		{
@@ -38,7 +39,7 @@ namespace app.Data
 			builder
 				.Entity<Follower>()
 				.HasOne(follower => follower.FollowerUser)
-				.WithMany(follower => follower.Followers)
+				.WithMany(user => user.Followers)
 				.HasForeignKey(follower => follower.FollowerId)
 				// Use `DeleteBehaviour.Cascade`
                 // if You are not using SQL Server
@@ -47,8 +48,30 @@ namespace app.Data
 			builder
 				.Entity<Follower>()
 				.HasOne(follower => follower.FollowedUser)
-				.WithMany(follower => follower.Followed)
+				.WithMany(user => user.Followed)
 				.HasForeignKey(follower => follower.FollowedId)
+				// Use `DeleteBehaviour.Cascade`
+                // if You are not using SQL Server
+				.OnDelete(DeleteBehavior.NoAction);
+
+            builder
+				.Entity<Like>()
+				.HasKey(key => new { key.UserId, key.PostId });
+
+            builder
+				.Entity<Like>()
+				.HasOne(like => like.User)
+				.WithMany(user => user.Likes)
+				.HasForeignKey(like => like.UserId)
+				// Use `DeleteBehaviour.Cascade`
+                // if You are not using SQL Server
+				.OnDelete(DeleteBehavior.NoAction);
+
+			builder
+				.Entity<Like>()
+				.HasOne(like => like.Post)
+				.WithMany(post => post.Likes)
+				.HasForeignKey(like => like.PostId)
 				// Use `DeleteBehaviour.Cascade`
                 // if You are not using SQL Server
 				.OnDelete(DeleteBehavior.NoAction);

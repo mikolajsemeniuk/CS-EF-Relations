@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace app.DTO
 {
@@ -8,5 +9,6 @@ namespace app.DTO
         public string Title { get; set; }
         public DateTime CreatedAt { get; set; }
         public int UserId { get; set; }
+        public ICollection<LikePayload> Likes { get; set; } = new List<LikePayload>();
     }
 }

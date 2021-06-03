@@ -46,12 +46,17 @@ namespace app.Services
         {
             return await _context.Posts
                 .Where(post => post.UserId == userId && post.PostId == postId)
+                .Include(post => post.Likes)
                 .Select(post => new PostPayload
                 {
                     PostId = post.PostId,
                     Title = post.Title,
                     CreatedAt = post.CreatedAt,
-                    UserId = post.UserId
+                    UserId = post.UserId,
+                    Likes = post.Likes.Select(like => new LikePayload
+                    {
+                        LikerId = like.UserId,
+                    }).ToList()
                 }).SingleAsync();
         }
 
@@ -59,12 +64,17 @@ namespace app.Services
         {
             return await _context.Posts
                 .Where(post => post.UserId == userId)
+                .Include(post => post.Likes)
                 .Select(post => new PostPayload
                 {
                     PostId = post.PostId,
                     Title = post.Title,
                     CreatedAt = post.CreatedAt,
-                    UserId = post.UserId
+                    UserId = post.UserId,
+                    Likes = post.Likes.Select(like => new LikePayload
+                    {
+                        LikerId = like.UserId,
+                    }).ToList()
                 }).ToListAsync();
         }
 
