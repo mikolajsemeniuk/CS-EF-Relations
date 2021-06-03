@@ -4,3 +4,6 @@
 1. One to Many
 1. Many to Many
 1. One to One
+
+## Links
+* [https://stackoverflow.com/questions/10822656/entity-framework-include-multiple-levels-of-properties](https://stackoverflow.com/questions/10822656/entity-framework-include-multiple-levels-of-properties)
