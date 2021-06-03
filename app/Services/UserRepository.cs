@@ -41,6 +41,8 @@ namespace app.Services
                 .Users
                 .Where(user => user.UserId == id)
                 .Include(user => user.Posts)
+                .Include(user => user.Followers)
+                .Include(user => user.Followed)
                 .Select(user => new UserPayload
                 {
                     UserId = user.UserId,
@@ -51,6 +53,14 @@ namespace app.Services
                         Title = post.Title,
                         CreatedAt = post.CreatedAt,
                         UserId = post.UserId
+                    }).ToList(),
+                    Followers = user.Followers.Select(follower => new FollowerPayload
+                    {
+                        FollowerId = follower.FollowedId,
+                    }).ToList(),
+                    Followed = user.Followed.Select(follower => new FollowerPayload
+                    {
+                        FollowerId = follower.FollowerId
                     }).ToList()
                 }).SingleAsync();
         }
@@ -60,6 +70,8 @@ namespace app.Services
             return await _context
                 .Users
                 .Include(user => user.Posts)
+                .Include(user => user.Followers)
+                .Include(user => user.Followed)
                 .Select(user => new UserPayload
                 {
                     UserId = user.UserId,
@@ -70,6 +82,14 @@ namespace app.Services
                         Title = post.Title,
                         CreatedAt = post.CreatedAt,
                         UserId = post.UserId
+                    }).ToList(),
+                    Followers = user.Followers.Select(follower => new FollowerPayload
+                    {
+                        FollowerId = follower.FollowedId,
+                    }).ToList(),
+                    Followed = user.Followed.Select(follower => new FollowerPayload
+                    {
+                        FollowerId = follower.FollowerId
                     }).ToList()
                 }).ToListAsync();
         }

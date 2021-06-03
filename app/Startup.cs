@@ -25,6 +25,7 @@ namespace app
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IFollowerRepository, FollowerRepository>();
             services.AddDbContext<DataContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
