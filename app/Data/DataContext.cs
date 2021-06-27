@@ -66,6 +66,7 @@ namespace app.Data
 				.HasForeignKey(like => like.UserId)
 				// Use `DeleteBehaviour.Cascade`
                 // if You are not using SQL Server
+				// .OnDelete(DeleteBehavior.ClientCascade); maybe this gonna work
 				.OnDelete(DeleteBehavior.NoAction);
 
 			builder
